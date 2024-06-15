@@ -5,10 +5,19 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody rigidbody;
-    private Gear myGear = Gear.Gear01;
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private float driftSpeed;
+    [SerializeField] private float turnSpeed;
+    [SerializeField] private float breakAmount;
+    [SerializeField] private float staminaDecreaseAmount;
+
     private int pedal = 0;
     private float stamina = 100.0f;
+
+    private bool isGrounded;
+    private Vector3 forward;
+    private Gear myGear = Gear.Gear01;
+    private Rigidbody rigidbody;
 
     private float SpeedToAdd
     {
@@ -17,14 +26,33 @@ public class PlayerMovement : MonoBehaviour
             switch (myGear)
             {
                 case Gear.Gear01:
-                    return 10.0f;
-                case Gear.Gear02:
                     return 30.0f;
+                case Gear.Gear02:
+                    return 60.0f;
                 case Gear.Gear03:
-                    return 50.0f;
+                    return 90.0f;
                 default:
                     Debug.LogError($"Unexpected Gear : {myGear}");
-                    return 10.0f;
+                    return 30.0f;
+            }
+        }
+    }
+
+    private float GetSavedTurnSpeed
+    {
+        get
+        {
+            switch (myGear)
+            {
+                case Gear.Gear01:
+                    return 1.0f;
+                case Gear.Gear02:
+                    return 0.6f;
+                case Gear.Gear03:
+                    return 0.4f;
+                default:
+                    Debug.LogError($"Unexpected Gear : {myGear}");
+                    return 1.0f;
             }
         }
     }
@@ -32,59 +60,61 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        StartCoroutine(CheckGrounded());
     }
 
     private void Update()
     {
         HandleMovementInput();
-        HandleTurning();
         HandleGearInput();
+        HandlePlayerForward();
     }
 
     private void HandleMovementInput()
     {
-        if (Input.GetKeyDown(KeyCode.A) && CanPedal(0))
-        {
-            AddSpeed();
-        }
-        else if (Input.GetKeyDown(KeyCode.D) && CanPedal(1))
-        {
-            AddSpeed();
-        }
-    }
+        if (Input.GetKeyDown(KeyCode.A) && CanPedal(0)) { AddSpeed(); }
+        else if (Input.GetKeyDown(KeyCode.D) && CanPedal(1)) { AddSpeed(); }
 
-    private void HandleTurning()
-    {
+        if (Input.GetKey(KeyCode.Space)) { Break(); }
 
+        if (Input.GetKeyDown(KeyCode.LeftShift)) { Drift(true); }
+        else if (Input.GetKeyUp(KeyCode.LeftShift)) { Drift(); }
     }
 
     private void HandleGearInput()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            ChangeGear(1);
-        }
-        else if (Input.GetKeyDown(KeyCode.Mouse1))
-        {
-            ChangeGear(-1);
-        }
+        if (Input.GetKeyDown(KeyCode.W)) { ChangeGear(1); }
+        else if (Input.GetKeyDown(KeyCode.S)) { ChangeGear(-1); }
     }
 
     public void AddSpeed()
     {
-        rigidbody.AddForce(Vector3.forward * SpeedToAdd, ForceMode.Force);
-        Debug.Log($"SpeedToAdd : {SpeedToAdd}");
+        if (stamina <= 0.0f)
+        {
+            myGear = Gear.Gear01;
+        }
+        if (!playerCamera)
+        {
+            Debug.LogError($"PlayerCamera not found");
+            return;
+        }
+
+        rigidbody.AddForce(forward.normalized * SpeedToAdd, ForceMode.Acceleration);
+        stamina -= staminaDecreaseAmount;
+        Debug.Log($"stamina : {stamina}");
     }
 
     private void ChangeGear(int value)
     {
+        if (stamina <= 0.0f) { return; }
+
         myGear = (Gear)Mathf.Clamp((float)myGear + value, 0.0f, (float)Gear.Gear03);
-        Debug.Log($"Gear : {myGear}");
+        turnSpeed = GetSavedTurnSpeed;
     }
 
     private bool CanPedal(int value)
     {
-        if ((pedal & (1 << value)) != 0 || stamina <= 0.0f) { return false; }
+        if ((pedal & (1 << value)) != 0) { return false; }
         if (pedal == 0) 
         { 
             pedal = (1 << value);
@@ -93,5 +123,46 @@ public class PlayerMovement : MonoBehaviour
         
         pedal ^= 0b_11;
         return true;
+    }
+
+    private void HandlePlayerForward()
+    {
+        if (!isGrounded) { return; }
+
+        forward = Vector3.MoveTowards(forward.normalized, playerCamera.transform.forward.normalized, turnSpeed * Time.deltaTime);
+        forward.y = 0;
+        rigidbody.velocity = forward.normalized * rigidbody.velocity.magnitude;
+    }
+
+    private void Break()
+    {
+        rigidbody.velocity -= new Vector3(breakAmount, breakAmount, breakAmount);
+    }
+
+    private void Drift(bool keyDown = false)
+    {
+        if (stamina <= 10.0f) { return; }
+        if (!keyDown)
+        {
+            turnSpeed = GetSavedTurnSpeed;
+            return;
+        }
+
+        turnSpeed = driftSpeed;
+        stamina -= 10.0f;
+    }
+
+    private IEnumerator CheckGrounded()
+    {
+        while (true)
+        {
+            if (Physics.Raycast(transform.position, Vector3.down, 0.5f))
+            {
+                isGrounded = true;
+            }
+            else { isGrounded = false; }
+
+            yield return new WaitForSeconds(1.0f);
+        }
     }
 }
