@@ -8,3 +8,10 @@ public enum Gear
     Gear02,
     Gear03
 }
+
+public enum BikeState
+{
+    Pedaling,
+    Cruising,
+    Still
+}

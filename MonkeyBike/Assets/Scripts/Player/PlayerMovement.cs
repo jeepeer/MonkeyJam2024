@@ -5,18 +5,34 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private Camera playerCamera;
+    public Camera playerCamera;
+
     [SerializeField] private float driftSpeed;
+    [SerializeField] private float driftStaminaDrain;
+    [SerializeField] private float minDriftStamina;
+    [SerializeField] private float driftTimer;
+    [SerializeField] private float driftTimeAmountlol;
+
     [SerializeField] private float turnSpeed;
     [SerializeField] private float breakAmount;
-    [SerializeField] private float staminaDecreaseAmount;
+
+    [SerializeField] private float staminaDrain;
+
+    [SerializeField] private float stamina = 100.0f;
+
+    [SerializeField] private LayerMask knockBack;
+    [SerializeField] private float knockBackForce;
+
+    private float staminaRecovery;
+    private bool recoverStamina = false;
 
     private int pedal = 0;
-    private float stamina = 100.0f;
 
     private bool isGrounded;
     private Vector3 forward;
     private Gear myGear = Gear.Gear01;
+    private BikeState myState = BikeState.Still;
+
     private Rigidbody rigidbody;
 
     private float SpeedToAdd
@@ -68,6 +84,22 @@ public class PlayerMovement : MonoBehaviour
         HandleMovementInput();
         HandleGearInput();
         HandlePlayerForward();
+        driftTimer = Mathf.Clamp(driftTimer + 0.5f * Time.deltaTime, 0.0f, 3.0f);
+        if (myState == BikeState.Cruising || myState == BikeState.Still) 
+        {
+            stamina = Mathf.Clamp(stamina + 0.5f * Time.deltaTime, 0.0f, 100.0f);
+            pedal = 0;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == (int)Mathf.Log(knockBack.value, 2))
+        {
+            Vector3 e = transform.position - collision.transform.position;
+            e.y = 0;
+            rigidbody.AddForce(e.normalized * knockBackForce);
+        }
     }
 
     private void HandleMovementInput()
@@ -77,7 +109,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space)) { Break(); }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift)) { Drift(true); }
+        if (Input.GetKey(KeyCode.LeftShift)) { Drift(true); }
         else if (Input.GetKeyUp(KeyCode.LeftShift)) { Drift(); }
     }
 
@@ -86,24 +118,6 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W)) { ChangeGear(1); }
         else if (Input.GetKeyDown(KeyCode.S)) { ChangeGear(-1); }
     }
-
-    public void AddSpeed()
-    {
-        if (stamina <= 0.0f)
-        {
-            myGear = Gear.Gear01;
-        }
-        if (!playerCamera)
-        {
-            Debug.LogError($"PlayerCamera not found");
-            return;
-        }
-
-        rigidbody.AddForce(forward.normalized * SpeedToAdd, ForceMode.Acceleration);
-        stamina -= staminaDecreaseAmount;
-        Debug.Log($"stamina : {stamina}");
-    }
-
     private void ChangeGear(int value)
     {
         if (stamina <= 0.0f) { return; }
@@ -112,6 +126,26 @@ public class PlayerMovement : MonoBehaviour
         turnSpeed = GetSavedTurnSpeed;
     }
 
+    public void AddSpeed()
+    {
+        // TODO : fix -= staminaDrain when 0 stamina
+        myState = BikeState.Pedaling;
+
+        if (stamina <= staminaDrain)
+        {
+            myGear = Gear.Gear01;
+        }
+
+        if (!playerCamera)
+        {
+            Debug.LogError($"PlayerCamera not found");
+            return;
+        }
+
+        rigidbody.AddForce(forward.normalized * SpeedToAdd, ForceMode.Force);
+        stamina -= staminaDrain;
+    }
+    
     private bool CanPedal(int value)
     {
         if ((pedal & (1 << value)) != 0) { return false; }
@@ -125,6 +159,29 @@ public class PlayerMovement : MonoBehaviour
         return true;
     }
 
+    private void Break()
+    {
+        rigidbody.velocity -= new Vector3(breakAmount, breakAmount, breakAmount);
+    }
+
+    private void Drift(bool keyDown = false)
+    {
+        if (stamina <= minDriftStamina || driftTimer <= 0.0f) { return; }
+
+        if (!keyDown)
+        {
+            turnSpeed = GetSavedTurnSpeed;
+            return;
+        }
+
+        if (driftTimer > 0.0f)
+        {
+            turnSpeed = driftSpeed; // fix this it's called every frame
+            stamina -= driftStaminaDrain * Time.deltaTime;
+            driftTimer -= 1 * Time.deltaTime;
+        }
+    }
+
     private void HandlePlayerForward()
     {
         if (!isGrounded) { return; }
@@ -134,22 +191,9 @@ public class PlayerMovement : MonoBehaviour
         rigidbody.velocity = forward.normalized * rigidbody.velocity.magnitude;
     }
 
-    private void Break()
+    public void AddStamina(float amount)
     {
-        rigidbody.velocity -= new Vector3(breakAmount, breakAmount, breakAmount);
-    }
-
-    private void Drift(bool keyDown = false)
-    {
-        if (stamina <= 10.0f) { return; }
-        if (!keyDown)
-        {
-            turnSpeed = GetSavedTurnSpeed;
-            return;
-        }
-
-        turnSpeed = driftSpeed;
-        stamina -= 10.0f;
+        stamina += amount;
     }
 
     private IEnumerator CheckGrounded()
