@@ -1,34 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestGiver : MonoBehaviour
 {
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private GameObject cameraPosition;
+    [SerializeField] private GameObject playerPosition;
     [SerializeField] private Quest quest;
+    [SerializeField] private Text text;
+    private Player player;
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == (int)Mathf.Log(playerLayer.value, 2))
         {
             if (collision.gameObject.TryGetComponent<Player>(out Player player))
             {
-                StartQuestGiverCamera(player);
-                player.Stop();
-                player.KnockBack();
+                this.player = player;
+                StartQuest(player);
             }
-
-            DisplayQuestText();
         }
+    }
+
+    private void StartQuest(Player player)
+    {
+        StartQuestGiverCamera(player);
+        
+        player.StopMovement();
+        player.SetPlayerPosition(playerPosition.transform.position);
+
+        quest.StartQuest(player);
     }
 
     private void StartQuestGiverCamera(Player player)
     {
-        player.SetCameraPosition(cameraPosition.transform.position);
+        Vector3 lookRotation = gameObject.transform.position;
+        player.SetCameraPosition(lookRotation, cameraPosition.transform.position);
     }
 
-    private void DisplayQuestText()
+    public void StartGameplay()
     {
-
+        player.StartGameplay();
     }
 }

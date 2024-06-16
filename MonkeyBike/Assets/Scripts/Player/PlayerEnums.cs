@@ -15,3 +15,16 @@ public enum BikeState
     Cruising,
     Still
 }
+
+public enum QuestItems
+{
+    Test01,
+    Test02
+}
+
+public enum QuestState
+{
+    Start,
+    Ongoing,
+    Completed
+}

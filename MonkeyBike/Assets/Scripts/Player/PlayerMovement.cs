@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public Camera playerCamera;
-
+    [SerializeField] private float testSpeed;
     [SerializeField] private float driftSpeed;
     [SerializeField] private float driftStaminaDrain;
     [SerializeField] private float minDriftStamina;
@@ -23,8 +23,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask knockBack;
     [SerializeField] private float knockBackForce;
 
-    private float staminaRecovery;
-    private bool recoverStamina = false;
+    public bool pause = false;
 
     private int pedal = 0;
 
@@ -42,11 +41,11 @@ public class PlayerMovement : MonoBehaviour
             switch (myGear)
             {
                 case Gear.Gear01:
-                    return 30.0f;
+                    return testSpeed;
                 case Gear.Gear02:
-                    return 60.0f;
+                    return testSpeed * 1.5f;
                 case Gear.Gear03:
-                    return 90.0f;
+                    return testSpeed * 2;
                 default:
                     Debug.LogError($"Unexpected Gear : {myGear}");
                     return 30.0f;
@@ -81,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (pause) { return; }
         HandleMovementInput();
         HandleGearInput();
         HandlePlayerForward();
@@ -142,7 +142,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        rigidbody.AddForce(forward.normalized * SpeedToAdd, ForceMode.Force);
+        rigidbody.AddForce(forward.normalized * SpeedToAdd, ForceMode.Impulse);
         stamina -= staminaDrain;
     }
     
@@ -162,6 +162,7 @@ public class PlayerMovement : MonoBehaviour
     private void Break()
     {
         rigidbody.velocity -= new Vector3(breakAmount, breakAmount, breakAmount);
+        Vector3.ClampMagnitude(rigidbody.velocity, 0.0f);
     }
 
     private void Drift(bool keyDown = false)
@@ -196,17 +197,30 @@ public class PlayerMovement : MonoBehaviour
         stamina += amount;
     }
 
+    public void PauseMovement()
+    {
+        pause = true;
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.isKinematic = true;
+    }
+
+    public void StartMovement()
+    {
+        pause = false;
+        rigidbody.isKinematic = false;
+    }
+
     private IEnumerator CheckGrounded()
     {
         while (true)
         {
-            if (Physics.Raycast(transform.position, Vector3.down, 0.5f))
+            if (Physics.Raycast(transform.position, Vector3.down, 0.8f))
             {
                 isGrounded = true;
             }
             else { isGrounded = false; }
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }

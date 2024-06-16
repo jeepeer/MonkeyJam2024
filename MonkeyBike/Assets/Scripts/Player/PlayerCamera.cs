@@ -8,7 +8,10 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private float turnSpeed;
     private float mouseXAxis = 0.0f;
     private float mouseYAxis = 0.0f;
-    
+    private bool pause = false;
+    private bool turn = false;
+    private Vector3 currentLookDirection;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -16,6 +19,12 @@ public class PlayerCamera : MonoBehaviour
 
     void Update()
     {
+        if (pause) { return; }
+        if (turn) 
+        { 
+            TurnToQuestGiver();
+            return;
+        }
         if (!player) 
         {
             Debug.LogError($"Player not found");
@@ -38,6 +47,30 @@ public class PlayerCamera : MonoBehaviour
         var y = Quaternion.AngleAxis(v.y, Vector3.right);
 
         transform.localRotation = x * y;
-        transform.position = player.transform.position;
+        Vector3 vb = new Vector3(player.transform.position.x, player.transform.position.y +1, player.transform.position.z);
+        transform.position = vb;
+    }
+
+    public void LookAtQuestGiver(Vector3 lookDirection, Vector3 position)
+    {
+        turn = true;
+        currentLookDirection = lookDirection;
+        transform.position = position;
+    }
+
+    private void TurnToQuestGiver()
+    {
+        transform.LookAt(currentLookDirection, Vector3.up);
+        transform.position = Vector3.zero;
+    }
+
+    public void PauseCamera()
+    {
+        pause = true;
+    }
+
+    public void StartCamera()
+    {
+        turn = false;
     }
 }
