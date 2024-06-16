@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8757a948d4e7b14e8180bf5812a22e2, type: 3}
   m_Name: Test02
   m_EditorClassIdentifier: 
-  questIntro: ackchually there's more
-  questBrief: questing more fr
-  questComplete: we're done!
+  questIntro: Ackchually there's one more orb.Please gimme
+  questBrief: The other orb quick!
+  questComplete: Thanks bro
   item: 1

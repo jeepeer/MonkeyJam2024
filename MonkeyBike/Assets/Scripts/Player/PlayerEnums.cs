@@ -17,8 +17,23 @@ public enum BikeState
 
 public enum QuestItems
 {
-    Test01,
-    Test02
+    Drummer,
+    Guitar,
+    Tea,
+    FriedChicken,
+    MonkiTranslator,
+    MusicAnime,
+    CrustaceanAnime,
+    AncientAnime,
+    Banana,
+    SFManual,
+    Drink,
+    Paint,
+    Bike,
+    ConcertTicket,
+    PeteFight01,
+    PeteFight02,
+    SFManualTrue
 }
 
 public enum QuestState

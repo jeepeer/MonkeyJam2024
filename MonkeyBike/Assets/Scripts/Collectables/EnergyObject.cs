@@ -11,7 +11,7 @@ public class EnergyObject : MonoBehaviour
     {
         if (other.gameObject.layer == (int)Mathf.Log(playerLayer.value,2))
         {
-            other.GetComponent<Player>()?.AddStamina(staminaGain);
+            //other.GetComponent<Player>()?.AddStamina(staminaGain);
         }
     }
 }

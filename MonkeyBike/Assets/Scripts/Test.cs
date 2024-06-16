@@ -5,33 +5,37 @@ using UnityEngine;
 public class Test : MonoBehaviour
 {
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private float force;
+    [SerializeField] public float force;
     [SerializeField] private float rotationSpeed;
     private float maxRotationSpeed = 20000.0f;
     private float defaultRotationSpeed;
 
-    private float speed = 1.0f;
+    public float speed = 2.0f;
     private float cruiseTimer;
     private float cruiseCooldown = 1.0f;
-    private float maxForce = 10.0f;
+    private float maxForce = 30.0f;
     private int pedal;
     
     private float drift = 6000.0f;
     private float driftTimer;
     private float maxDriftTime = 3.0f;
 
+    public bool pause = false;
+
     private BikeState bikeState;
-    private Rigidbody rigidbody;
+    public Rigidbody rigidbody;
 
     private void Start()
     {
         rigidbody = GetComponentInParent<Rigidbody>();
         defaultRotationSpeed = rotationSpeed;
-        rigidbody.maxLinearVelocity = 10.0f;
+        rigidbody.maxLinearVelocity = 12.0f;
     }
 
     void Update()
     {
+        if (pause) { return; }
+
         if (bikeState == BikeState.Default)
         {
             driftTimer += 1.5f * Time.deltaTime;
@@ -40,7 +44,16 @@ public class Test : MonoBehaviour
         HandleMovement();
         HandleDrag();
         RotateToCameraForward();
+
+        rigidbody.velocity += Physics.gravity * 2 * Time.deltaTime;
         rigidbody.velocity += transform.forward * force * Time.deltaTime;
+        if (rigidbody.velocity.magnitude <= 1.0f) 
+        {
+            // fix later lmao hihi
+            Vector3 newForward = playerCamera.transform.forward;
+            newForward.y = 0.0f;
+            transform.forward = newForward; 
+        }
     }
 
     private void HandleMovement()
@@ -95,7 +108,7 @@ public class Test : MonoBehaviour
 
     private void Break()
     {
-        force -= 10.0f * Time.deltaTime;
+        force -= 100.0f * Time.deltaTime;
         force = Mathf.Clamp(force, 0.0f, maxForce);
     }
 
@@ -119,6 +132,7 @@ public class Test : MonoBehaviour
 
     public void KnockBack(Vector3 hitDirection)
     {
-        rigidbody.AddForce(hitDirection - transform.parent.position * 2.0f, ForceMode.Impulse);
+        rigidbody.AddForce(hitDirection - transform.parent.position * 20.0f, ForceMode.Impulse);
+        force = 0.0f;
     }
 }

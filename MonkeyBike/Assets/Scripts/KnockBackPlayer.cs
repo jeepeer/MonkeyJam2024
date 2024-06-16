@@ -5,11 +5,11 @@ using UnityEngine;
 public class KnockBackPlayer : MonoBehaviour
 {
     [SerializeField] LayerMask playerLayer;
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.gameObject.layer == (int)Mathf.Log(playerLayer.value, 2))
+        if (collision.gameObject.layer == (int)Mathf.Log(playerLayer.value, 2))
         {
-            other.GetComponent<Test>()?.KnockBack(transform.position);
+            collision.gameObject.GetComponentInChildren<Test>()?.KnockBack(transform.position);
         }
     }
 }

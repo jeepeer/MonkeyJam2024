@@ -11,7 +11,7 @@ public class QuestCollectable : MonoBehaviour
     {
         if (other.gameObject.layer == (int)Mathf.Log(playerLayer.value, 2))
         {
-            other.GetComponent<Player>()?.AddItem(questItem);
+            other.GetComponentInChildren<Player>()?.AddItem(questItem);
             Destroy(gameObject);
         }
     }

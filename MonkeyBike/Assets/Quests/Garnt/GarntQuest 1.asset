@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8757a948d4e7b14e8180bf5812a22e2, type: 3}
-  m_Name: Test01
+  m_Name: GarntQuest 1
   m_EditorClassIdentifier: 
-  questIntro: hello fellow biker.You're looking radical. Please pick up my orb :D
-  questBrief: Don't forget my orb
-  questComplete: Thank you for my orb
+  questIntro: Where could he have run off to?. This concert will never happen at
+    this point
+  questBrief: Where is our drummer.
+  questComplete: You found him!. Where was he?. In a cave? oh geez. Now we're almost
+    ready to perform
   item: 0

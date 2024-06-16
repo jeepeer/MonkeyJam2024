@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8757a948d4e7b14e8180bf5812a22e2, type: 3}
-  m_Name: Test01
+  m_Name: ConnorQuest
   m_EditorClassIdentifier: 
-  questIntro: hello fellow biker.You're looking radical. Please pick up my orb :D
-  questBrief: Don't forget my orb
-  questComplete: Thank you for my orb
+  questIntro: Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch. Oh I didn't
+    notice you there. I don't suppose you have the time to help me. I need to get
+    to the concert. But I can't travel without something to drink
+  questBrief: If you find something to drink let me know
+  questComplete: Splendid!
   item: 0

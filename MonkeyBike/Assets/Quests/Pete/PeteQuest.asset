@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8757a948d4e7b14e8180bf5812a22e2, type: 3}
-  m_Name: Test01
+  m_Name: PeteQuest
   m_EditorClassIdentifier: 
-  questIntro: hello fellow biker.You're looking radical. Please pick up my orb :D
-  questBrief: Don't forget my orb
-  questComplete: Thank you for my orb
+  questIntro: Stay back!. I am charging up a powerful attack. Hadouken!. Huh. It
+    didn't work. Hey, uhh. Do you know where I could find a SF manual
+  questBrief: I need that street fighter manual.
+  questComplete: Wow!. With this I will be unstoppable
   item: 0

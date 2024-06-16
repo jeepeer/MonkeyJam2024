@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8757a948d4e7b14e8180bf5812a22e2, type: 3}
-  m_Name: Test01
+  m_Name: MonkiQuest 2
   m_EditorClassIdentifier: 
-  questIntro: hello fellow biker.You're looking radical. Please pick up my orb :D
-  questBrief: Don't forget my orb
-  questComplete: Thank you for my orb
+  questIntro: So hey. Me and the apes were playing SF. But we can't remember the
+    moves. If you could find a manual. That would be great
+  questBrief: Do you have that SF manual yet?
+  questComplete: 'That''s it!. Far out '
   item: 0

@@ -9,18 +9,14 @@ public class QuestGiver : MonoBehaviour
     [SerializeField] private GameObject cameraPosition;
     [SerializeField] private GameObject playerPosition;
     [SerializeField] private Quest quest;
-    [SerializeField] private Text text;
     private Player player;
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == (int)Mathf.Log(playerLayer.value, 2))
         {
-            if (collision.gameObject.TryGetComponent<Player>(out Player player))
-            {
-                this.player = player;
-                StartQuest(player);
-            }
+            player = collision.gameObject.GetComponentInChildren<Player>();
+            if (player) { StartQuest(player); }
         }
     }
 

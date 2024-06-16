@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8757a948d4e7b14e8180bf5812a22e2, type: 3}
-  m_Name: Test01
+  m_Name: AffableQuest
   m_EditorClassIdentifier: 
-  questIntro: hello fellow biker.You're looking radical. Please pick up my orb :D
-  questBrief: Don't forget my orb
-  questComplete: Thank you for my orb
+  questIntro: Why hullo there chap. I seem to have missplaced some fried chicken.
+    Could you be a jolly fellow and find it for me?
+  questBrief: I need the chicken, now hurry along!
+  questComplete: Hurray! Finally a delectable meal. But I need another favour
   item: 0

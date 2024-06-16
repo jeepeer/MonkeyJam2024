@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8757a948d4e7b14e8180bf5812a22e2, type: 3}
-  m_Name: Test01
+  m_Name: PeteQuest 2
   m_EditorClassIdentifier: 
-  questIntro: hello fellow biker.You're looking radical. Please pick up my orb :D
-  questBrief: Don't forget my orb
-  questComplete: Thank you for my orb
+  questIntro: Do you think you're ready to face me?. Attack me weakling!
+  questBrief: 'Ouch!. '
+  questComplete: Okay man relax. You didn't have to go so hard. Here you can have
+    my manual
   item: 0

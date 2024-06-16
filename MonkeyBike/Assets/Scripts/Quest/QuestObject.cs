@@ -6,16 +6,14 @@ using UnityEngine;
 public class QuestObject : ScriptableObject
 {
     public string questIntro;
+    private string[] QI;
     public string questBrief;
+    private string[] QB;
     public string questComplete;
+    private string[] QC;
     public QuestItems item;
 
-    private Dictionary<QuestState, string> dict;
-
-    private void Awake()
-    {
-        InitDictionary();
-    }
+    private Dictionary<QuestState, string[]> dict;
 
     public bool TryToCompleteQuest(List<QuestItems> playerItems)
     {
@@ -30,19 +28,22 @@ public class QuestObject : ScriptableObject
         return false;
     }
 
-    public string GetNextQuest(QuestState state)
+    public string[] GetQuestText(QuestState state)
     {
-        Debug.Log((int)state);
         return dict[state];
     }
 
     public void InitDictionary()
     {
-        dict = new Dictionary<QuestState, string>
+        QI = questIntro.Split('.', System.StringSplitOptions.RemoveEmptyEntries);
+        QB = questBrief.Split('.', System.StringSplitOptions.RemoveEmptyEntries);
+        QC = questComplete.Split('.', System.StringSplitOptions.RemoveEmptyEntries);
+
+        dict = new Dictionary<QuestState, string[]>
         {
-            {QuestState.Start, questIntro },
-            {QuestState.Ongoing, questBrief},
-            {QuestState.Completed, questComplete }
+            {QuestState.Start, QI },
+            {QuestState.Ongoing, QB},
+            {QuestState.Completed, QC}
         };
     }
 }

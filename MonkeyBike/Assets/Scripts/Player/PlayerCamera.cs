@@ -26,11 +26,6 @@ public class PlayerCamera : MonoBehaviour
             TurnToQuestGiver();
             return;
         }
-        //if (!player) 
-        //{
-        //    Debug.LogError($"Player not found");
-        //    return; 
-        //}
         HandleTurning();
     }
 
@@ -54,13 +49,12 @@ public class PlayerCamera : MonoBehaviour
     {
         turn = true;
         currentLookDirection = lookDirection;
-        transform.position = position;
+        transform.localPosition = position;
     }
 
     private void TurnToQuestGiver()
     {
         transform.LookAt(currentLookDirection, Vector3.up);
-        transform.position = Vector3.zero;
     }
 
     public void PauseCamera()
@@ -71,5 +65,6 @@ public class PlayerCamera : MonoBehaviour
     public void StartCamera()
     {
         turn = false;
+        transform.localPosition = Vector3.up;
     }
 }
