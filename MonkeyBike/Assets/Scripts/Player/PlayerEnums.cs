@@ -11,9 +11,8 @@ public enum Gear
 
 public enum BikeState
 {
-    Pedaling,
-    Cruising,
-    Still
+    Default,
+    Drifting
 }
 
 public enum QuestItems
@@ -27,4 +26,10 @@ public enum QuestState
     Start,
     Ongoing,
     Completed
+}
+
+public enum GroundState
+{
+    Flat,
+    Slope
 }

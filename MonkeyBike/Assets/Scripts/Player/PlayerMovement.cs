@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrounded;
     private Vector3 forward;
     private Gear myGear = Gear.Gear01;
-    private BikeState myState = BikeState.Still;
+    //private BikeState myState = BikeState.Still;
 
     private Rigidbody rigidbody;
 
@@ -85,11 +85,11 @@ public class PlayerMovement : MonoBehaviour
         HandleGearInput();
         HandlePlayerForward();
         driftTimer = Mathf.Clamp(driftTimer + 0.5f * Time.deltaTime, 0.0f, 3.0f);
-        if (myState == BikeState.Cruising || myState == BikeState.Still) 
-        {
-            stamina = Mathf.Clamp(stamina + 0.5f * Time.deltaTime, 0.0f, 100.0f);
-            pedal = 0;
-        }
+        //if (myState == BikeState.Cruising || myState == BikeState.Still) 
+        //{
+        //    stamina = Mathf.Clamp(stamina + 0.5f * Time.deltaTime, 0.0f, 100.0f);
+        //    pedal = 0;
+        //}
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -129,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
     public void AddSpeed()
     {
         // TODO : fix -= staminaDrain when 0 stamina
-        myState = BikeState.Pedaling;
+        //myState = BikeState.Pedaling;
 
         if (stamina <= staminaDrain)
         {

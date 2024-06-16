@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    [SerializeField] private Player player;
-    [SerializeField] private float turnSpeed;
+    //[SerializeField] private Player player;
+    [SerializeField] private Test player;
+    [SerializeField] private float mouseSensitivity;
     private float mouseXAxis = 0.0f;
     private float mouseYAxis = 0.0f;
     private bool pause = false;
@@ -25,18 +26,18 @@ public class PlayerCamera : MonoBehaviour
             TurnToQuestGiver();
             return;
         }
-        if (!player) 
-        {
-            Debug.LogError($"Player not found");
-            return; 
-        }
+        //if (!player) 
+        //{
+        //    Debug.LogError($"Player not found");
+        //    return; 
+        //}
         HandleTurning();
     }
 
     private void HandleTurning()
     {
-        mouseXAxis += Input.GetAxis("Mouse X") * turnSpeed; 
-        mouseYAxis -= Input.GetAxis("Mouse Y") * turnSpeed;
+        mouseXAxis += Input.GetAxis("Mouse X") * mouseSensitivity; 
+        mouseYAxis -= Input.GetAxis("Mouse Y") * mouseSensitivity;
 
         //mouseXAxis = Mathf.Clamp(mouseXAxis, -90, 90);
         mouseYAxis = Mathf.Clamp(mouseYAxis, -60, 30);
@@ -47,8 +48,6 @@ public class PlayerCamera : MonoBehaviour
         var y = Quaternion.AngleAxis(v.y, Vector3.right);
 
         transform.localRotation = x * y;
-        Vector3 vb = new Vector3(player.transform.position.x, player.transform.position.y +1, player.transform.position.z);
-        transform.position = vb;
     }
 
     public void LookAtQuestGiver(Vector3 lookDirection, Vector3 position)
